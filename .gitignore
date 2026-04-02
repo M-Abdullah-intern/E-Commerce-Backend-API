@@ -1,0 +1,32 @@
+# Build & bin folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Visual Studio
+*.vs/
+.vs/
+
+# EF Core Migrations (optional)
+Migrations/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Logs & temporary files
+*.log
+*.tmp
+*.temp
+
+# Secret files
+appsettings.*.json
