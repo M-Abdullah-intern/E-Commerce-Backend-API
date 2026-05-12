@@ -49,10 +49,17 @@ namespace ECommerceAPI.Services.Implementations
         }
 
         // Admin Methods
-        public async Task AddProduct(ProductCreateDto dto)
+        public async Task<ProductCreatedDto> AddProduct(ProductCreateDto dto)
         {
             var product = _mapper.Map<Product>(dto);
+
             await _repo.AddAsync(product);
+
+            return new ProductCreatedDto
+            {
+                Id = product.Id,
+                Message = "Product added successfully"
+            };
         }
 
         public async Task UpdateProduct(int id, ProductUpdateDto dto)

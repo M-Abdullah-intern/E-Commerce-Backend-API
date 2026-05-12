@@ -1,7 +1,10 @@
-﻿namespace ECommerceAPI.DTOs.CartDTOs
+﻿using ECommerceAPI.Models;
+
+namespace ECommerceAPI.DTOs.CartDTOs
 {
     public class CartItemDto
     {
+        public int Id { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public decimal Price { get; set; }

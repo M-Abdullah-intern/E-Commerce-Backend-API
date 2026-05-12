@@ -17,7 +17,9 @@ namespace ECommerceAPI.Repositories.Implementations
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
-            => await _context.Products.ToListAsync();
+            => await _context.Products
+                .Include(p => p.Category)
+                .ToListAsync();
 
         public async Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId)
             => await _context.Products
@@ -30,7 +32,9 @@ namespace ECommerceAPI.Repositories.Implementations
                 .ToListAsync();
 
         public async Task<Product> GetByIdAsync(int id)
-            => await _context.Products.FindAsync(id);
+            => await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task AddAsync(Product product)
         {
@@ -40,7 +44,6 @@ namespace ECommerceAPI.Repositories.Implementations
 
         public async Task UpdateAsync(Product product)
         {
-            _context.Products.Update(product);
             await _context.SaveChangesAsync();
         }
 
@@ -54,10 +57,12 @@ namespace ECommerceAPI.Repositories.Implementations
             }
         }
 
-        // 🔥 MAIN FEATURE (Day 11)
+        
         public async Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductQueryParams queryParams)
         {
-            var query = _context.Products.AsQueryable();
+            var query = _context.Products
+                .Include(p => p.Category)
+                .AsQueryable();
 
             // FILTER
             if (queryParams.CategoryId.HasValue)

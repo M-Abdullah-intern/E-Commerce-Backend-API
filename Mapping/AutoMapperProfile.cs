@@ -13,10 +13,12 @@ namespace ECommerceAPI.Mapping
         public AutoMapperProfile()
         {
             // Product
-            CreateMap<Product, ProductReadDto>();
+            CreateMap<Product, ProductReadDto>()
+                .ForMember(dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.Category.Name));
             CreateMap<ProductCreateDto, Product>();
             CreateMap<ProductUpdateDto, Product>()
-            .ForMember(dest => dest.Category, opt => opt.Ignore());
+                .ForMember(dest => dest.Category, opt => opt.Ignore());
 
             // Category
             CreateMap<Category, CategoryDto>();

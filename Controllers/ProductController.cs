@@ -39,8 +39,8 @@ namespace ECommerceAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductCreateDto dto)
         {
-            await _service.AddProduct(dto);
-            return Ok(ApiResponseHelper.Success("Product added successfully"));
+            var result = await _service.AddProduct(dto);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
