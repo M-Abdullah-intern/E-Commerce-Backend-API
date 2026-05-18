@@ -33,7 +33,7 @@ namespace ECommerceAPI.Repositories.Implementations
         {
             return await _context.CartItems
                 .Include(ci => ci.Cart)
-                .FirstOrDefaultAsync(ci => ci.Id == cartItemId);
+                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId);
         }
 
         public async Task AddCart(Cart cart)

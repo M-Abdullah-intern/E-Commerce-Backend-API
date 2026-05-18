@@ -40,7 +40,7 @@ namespace ECommerceAPI.Services
             // 6. Return DTO
             return new InvoiceDto
             {
-                OrderId = order.Id,
+                OrderId = order.OrderId,
                 CustomerName = order.User.Name,
                 CustomerEmail = order.User.Email,
                 InvoiceDate = DateTime.UtcNow,

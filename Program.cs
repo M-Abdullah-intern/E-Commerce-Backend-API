@@ -17,9 +17,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
 
+// Configure Entity Framework Core with SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure JSON options to handle enums as strings and case-insensitive property names
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -27,6 +29,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+// Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -34,6 +37,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    // For development purposes, we can disable HTTPS requirement. In production, this should be true.
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
@@ -52,6 +56,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    // Add JWT authentication to Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -62,6 +67,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter: Bearer YOUR_TOKEN"
     });
 
+    // Add global security requirement
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -78,27 +84,42 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Dependency Injection
+// Auth Dependencies
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Product Dependencies
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+
+//Image Dependencies
+builder.Services.AddScoped<IImageService, ImageService>();
+
+// Category Dependencies
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+// Cart Dependencies
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+// Order Dependencies
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
+// AutoMapper Configuration
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<AutoMapperProfile>();
 });
 
+// Add global exception handling middleware
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -109,10 +130,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Enforce HTTPS
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Serve static files (e.g., product images)
+app.UseStaticFiles();
+
+// Map controller routes
 app.MapControllers();
 
+// Run the application
 app.Run();

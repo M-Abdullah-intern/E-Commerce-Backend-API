@@ -2,7 +2,7 @@
 {
     public class ProductCreatedDto
     {
-        public int Id { get; set; }
+        public int ProductId { get; set; }
         public string Message { get; set; }
     }
 }

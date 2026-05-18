@@ -18,7 +18,7 @@ namespace ECommerceAPI.Repositories.Implementations
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
-                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.UserId == userId);
         }
 
         public async Task<Cart?> GetUserCart(int userId)

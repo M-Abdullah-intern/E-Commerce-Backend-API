@@ -65,7 +65,7 @@ namespace ECommerceAPI.Repositories.Implementations
                 .Include(o => o.User)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
-                .FirstOrDefaultAsync(o => o.Id == orderId);
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
     }
 }
