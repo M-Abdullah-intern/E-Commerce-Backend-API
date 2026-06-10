@@ -4,7 +4,7 @@ using ECommerceAPI.Services.Interfaces;
 namespace ECommerceAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/invoice")]
     public class InvoiceController : ControllerBase
     {
         private readonly IInvoiceService _invoiceService;

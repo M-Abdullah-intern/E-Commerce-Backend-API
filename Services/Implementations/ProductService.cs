@@ -67,6 +67,7 @@ namespace ECommerceAPI.Services.Implementations
         {
             // Map DTO to entity
             var product = _mapper.Map<Product>(dto);
+
             product.CreatedAt = DateTime.UtcNow;
             await _repo.AddAsync(product);
 
@@ -77,19 +78,75 @@ namespace ECommerceAPI.Services.Implementations
             };
         }
 
-        // Update with optimistic concurrency
         public async Task UpdateProduct(int id, ProductUpdateDto dto)
         {
-            // Fetch existing product
             var product = await _repo.GetByIdAsync(id);
-
-            product.UpdatedAt = DateTime.UtcNow;
-
-            // Check if product exists
             if (product == null)
                 throw new Exception("Not found");
 
+            product.UpdatedAt = DateTime.UtcNow;
+
             _mapper.Map(dto, product);
+
+            var incomingUrls = dto.ProductImageCreateDtos
+                .Select(i => i.ImageUrl)
+                .ToList();
+
+            var toRemove = product.ProductImages
+                .Where(existing => !incomingUrls.Contains(existing.ImageUrl))
+                .ToList();
+            foreach (var img in toRemove)
+            {
+                product.ProductImages.Remove(img);
+            }
+
+            int? lastPrimaryIndex = null;
+
+            foreach (var imageDto in dto.ProductImageCreateDtos)
+            {
+                var existing = product.ProductImages
+                    .FirstOrDefault(e => e.ImageUrl == imageDto.ImageUrl);
+
+                if (existing != null)
+                {
+                    existing.IsPrimary = imageDto.IsPrimary;
+                }
+                else
+                {
+                    product.ProductImages.Add(new ProductImage
+                    {
+                        ImageUrl = imageDto.ImageUrl,
+                        IsPrimary = imageDto.IsPrimary,
+                        ProductId = product.ProductId
+                    });
+                }
+
+                if (imageDto.IsPrimary)
+                {
+                    lastPrimaryIndex = incomingUrls.IndexOf(imageDto.ImageUrl);
+                }
+            }
+
+            if (lastPrimaryIndex.HasValue)
+            {
+                string winningUrl = incomingUrls[lastPrimaryIndex.Value];
+                foreach (var img in product.ProductImages)
+                {
+                    img.IsPrimary = (img.ImageUrl == winningUrl);
+                }
+            }
+            else
+            {
+                if (product.ProductImages.Any())
+                {
+                    var firstImage = product.ProductImages.First();
+                    firstImage.IsPrimary = true;
+                    foreach (var img in product.ProductImages.Skip(1))
+                    {
+                        img.IsPrimary = false;
+                    }
+                }
+            }
 
             await _repo.UpdateAsync(product);
         }

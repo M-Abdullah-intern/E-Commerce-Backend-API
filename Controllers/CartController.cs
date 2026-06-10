@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace ECommerceAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/cart")]
     [Authorize]
     public class CartController : ControllerBase
     {

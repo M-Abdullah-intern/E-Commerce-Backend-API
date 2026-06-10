@@ -17,8 +17,15 @@ namespace ECommerceAPI.Mapping
             CreateMap<Product, ProductReadDto>()
                 .ForMember(dest => dest.CategoryName,
                     opt => opt.MapFrom(src => src.Category.Name));
-            CreateMap<ProductCreateDto, Product>();
+            CreateMap<ProductCreateDto, Product>()
+                .ForMember(
+                    dest => dest.ProductImages,
+                    opt => opt.MapFrom(src => src.ProductImageCreateDtos)
+                );
             CreateMap<ProductImage, ProductImageDto>();
+            CreateMap<ProductImageCreateDto, ProductImage>();
+
+
             CreateMap<ProductUpdateDto, Product>()
                 .ForMember(dest => dest.Category, opt => opt.Ignore());
 

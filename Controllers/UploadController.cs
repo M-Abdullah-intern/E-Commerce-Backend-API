@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerceAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/upload")]
     public class UploadController : ControllerBase
     {
         private readonly IImageService _imageService;
