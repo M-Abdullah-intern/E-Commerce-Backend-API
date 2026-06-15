@@ -84,6 +84,7 @@ namespace ECommerceAPI.Repositories.Implementations
         {
             var query = _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.ProductImages)
                 .AsQueryable();
 
             if (queryParams.CategoryId.HasValue)
