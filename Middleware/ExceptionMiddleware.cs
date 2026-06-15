@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using ECommerceAPI.Exceptions;
+using System.Net;
 using System.Text.Json;
 
 public class ExceptionMiddleware
@@ -12,21 +13,11 @@ public class ExceptionMiddleware
         _logger = logger;
     }
 
-    public class NotFoundException : Exception
-    {
-        public NotFoundException(string message) : base(message) { }
-    }
-
-    public class BadRequestException : Exception
-    {
-        public BadRequestException(string message) : base(message) { }
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context); // move to next middleware
+            await _next(context);
         }
         catch (Exception ex)
         {
@@ -36,8 +27,10 @@ public class ExceptionMiddleware
 
             int statusCode = ex switch
             {
-                NotFoundException => (int)HttpStatusCode.NotFound,
                 BadRequestException => (int)HttpStatusCode.BadRequest,
+                NotFoundException => (int)HttpStatusCode.NotFound,
+                UnauthorizedException => (int)HttpStatusCode.Unauthorized,
+                ForbiddenException => (int)HttpStatusCode.Forbidden,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 

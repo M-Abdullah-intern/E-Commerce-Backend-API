@@ -11,6 +11,9 @@
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
 
+        // Searching
+        public string? Search { get; set; }
+
         // Sorting
         public string? SortBy { get; set; }  // price or name
         public string? SortOrder { get; set; } = "asc"; // asc / desc

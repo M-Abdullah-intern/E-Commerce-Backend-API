@@ -11,7 +11,7 @@ namespace ECommerceAPI.Repositories.Interfaces
 
         Task<Product> GetByIdAsync(int id);
 
-        Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductQueryParams queryParams);
+        Task<PaginatedResult<Product>> GetFilteredProductsAsync(ProductQueryParams queryParams);
 
         Task AddAsync(Product product);
         Task UpdateAsync(Product product);

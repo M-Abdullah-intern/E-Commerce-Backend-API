@@ -1,5 +1,4 @@
 ﻿using ECommerceAPI.DTOs.AuthDTOs;
-using ECommerceAPI.Helpers;
 using ECommerceAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +18,13 @@ namespace ECommerceAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            await _service.RegisterAsync(dto);
+            var token = await _service.RegisterAsync(dto);
 
-            return Ok(ApiResponseHelper.Success("User registered successfully"));
+            return Ok(new
+            {
+                success = true,
+                token = token
+            });
         }
 
         [HttpPost("login")]

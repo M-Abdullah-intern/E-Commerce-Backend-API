@@ -19,7 +19,7 @@ namespace ECommerceAPI.Services.Implementations
             _config = config;
         }
 
-        public async Task RegisterAsync(RegisterDto dto)
+        public async Task<string> RegisterAsync(RegisterDto dto)
         {
             var exists = await _repo.EmailExistsAsync(dto.Email);
 
@@ -39,6 +39,8 @@ namespace ECommerceAPI.Services.Implementations
 
             await _repo.AddUserAsync(user);
             await _repo.SaveChangesAsync();
+
+            return JwtTokenHelper.GenerateToken(user, _config);
         }
 
         public async Task<string> LoginAsync(LoginDto dto)

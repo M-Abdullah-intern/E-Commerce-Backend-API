@@ -11,7 +11,7 @@ namespace ECommerceAPI.Services.Interfaces
 
         Task<ProductReadDto> GetProductById(int id);
 
-        Task<IEnumerable<ProductReadDto>> GetFilteredProducts(ProductQueryParams queryParams);
+        Task<PaginatedResult<ProductReadDto>> GetFilteredProducts(ProductQueryParams queryParams);
 
         Task<ProductCreatedDto> AddProduct(ProductCreateDto dto);
         Task UpdateProduct(int id, ProductUpdateDto dto);

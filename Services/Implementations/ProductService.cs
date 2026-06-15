@@ -53,12 +53,18 @@ namespace ECommerceAPI.Services.Implementations
             return _mapper.Map<ProductReadDto>(products);
         }
 
-        // Advanced filtering with pagination
-        public async Task<IEnumerable<ProductReadDto>> GetFilteredProducts(ProductQueryParams queryParams)
+        public async Task<PaginatedResult<ProductReadDto>> GetFilteredProducts(ProductQueryParams queryParams)
         {
-            // Validate query parameters (e.g., page number, page size)
-            var products = await _repo.GetFilteredProductsAsync(queryParams);
-            return _mapper.Map<IEnumerable<ProductReadDto>>(products);
+            var result = await _repo.GetFilteredProductsAsync(queryParams);
+
+            return new PaginatedResult<ProductReadDto>
+            {
+                Items = _mapper.Map<List<ProductReadDto>>(result.Items),
+                TotalCount = result.TotalCount,
+                TotalPages = result.TotalPages,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize
+            };
         }
 
         // Admin Methods

@@ -80,37 +80,34 @@ namespace ECommerceAPI.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        // This method implements filtering, sorting, and pagination based on the provided query parameters.
-        public async Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductQueryParams queryParams)
+        public async Task<PaginatedResult<Product>> GetFilteredProductsAsync(ProductQueryParams queryParams)
         {
-            // BASE QUERY
             var query = _context.Products
                 .Include(p => p.Category)
                 .AsQueryable();
 
-            // FILTER
-            // Filter by category
             if (queryParams.CategoryId.HasValue)
                 query = query.Where(p => p.CategoryId == queryParams.CategoryId.Value);
 
-            // Filter by price range
             if (queryParams.MinPrice.HasValue)
                 query = query.Where(p => p.Price >= queryParams.MinPrice.Value);
 
             if (queryParams.MaxPrice.HasValue)
                 query = query.Where(p => p.Price <= queryParams.MaxPrice.Value);
 
-            // SORT
+            if (!string.IsNullOrEmpty(queryParams.Search))
+                query = query.Where(p =>
+                    p.Name.Contains(queryParams.Search) ||
+                    p.Description.Contains(queryParams.Search));
+
             if (!string.IsNullOrEmpty(queryParams.SortBy))
             {
-                //Sort by "price"
                 if (queryParams.SortBy.ToLower() == "price")
                 {
                     query = queryParams.SortOrder == "desc"
                         ? query.OrderByDescending(p => p.Price)
                         : query.OrderBy(p => p.Price);
                 }
-                // Sort by "name"
                 else if (queryParams.SortBy.ToLower() == "name")
                 {
                     query = queryParams.SortOrder == "desc"
@@ -120,18 +117,24 @@ namespace ECommerceAPI.Repositories.Implementations
             }
             else
             {
-                // Default sorting by ProductId
-                query = query.OrderBy(p => p.ProductId); // default
+                query = query.OrderBy(p => p.ProductId);
             }
 
-            // PAGINATION
-            query = query
-                .Skip(PaginationHelper.Skip(
-                queryParams.PageNumber,
-                queryParams.PageSize))
-                .Take(queryParams.PageSize);
+            var totalCount = await query.CountAsync();
 
-            return await query.ToListAsync();
+            var items = await query
+                .Skip(PaginationHelper.Skip(queryParams.PageNumber, queryParams.PageSize))
+                .Take(queryParams.PageSize)
+                .ToListAsync();
+
+            return new PaginatedResult<Product>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)queryParams.PageSize),
+                PageNumber = queryParams.PageNumber,
+                PageSize = queryParams.PageSize
+            };
         }
     }
 }
