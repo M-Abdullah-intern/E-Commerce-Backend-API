@@ -37,7 +37,13 @@ namespace ECommerceAPI.Mapping
                 .ForMember(dest => dest.ProductName,
                     opt => opt.MapFrom(src => src.Product.Name))
                 .ForMember(dest => dest.Price,
-                    opt => opt.MapFrom(src => src.Product.Price));
+                    opt => opt.MapFrom(src => src.Product.Price))
+                .ForMember(dest => dest.ImageUrl,
+                    opt => opt.MapFrom(src =>
+                        src.Product.ProductImages
+                            .Where(pi => pi.IsPrimary)
+                            .Select(pi => pi.ImageUrl)
+                            .FirstOrDefault()));
 
             CreateMap<Cart, CartDto>()
                 .ForMember(dest => dest.Items,

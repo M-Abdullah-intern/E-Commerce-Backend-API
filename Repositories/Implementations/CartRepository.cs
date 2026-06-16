@@ -26,6 +26,7 @@ namespace ECommerceAPI.Repositories.Implementations
             return await _context.Carts
                 .Include(c => c.CartItems)
                 .ThenInclude(ci => ci.Product)
+                .ThenInclude(p => p.ProductImages)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 

@@ -21,12 +21,10 @@ namespace ECommerceAPI.Repositories.Implementations
         // Get All Products method
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            var products = await _context.Products
+            return await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
-                .ToListAsync();
-            return await _context.Products.
-                Where(p => !p.IsDeleted)
+                .Where(p => !p.IsDeleted)
                 .ToListAsync();
         }
 
