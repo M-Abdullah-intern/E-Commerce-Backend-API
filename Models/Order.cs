@@ -17,4 +17,11 @@ public class Order
 
     public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
 
+    public string ShippingFullName { get; set; }
+    public string ShippingPhoneNumber { get; set; }
+    public string ShippingStreetAddress { get; set; }
+    public string ShippingCity { get; set; }
+    public string ShippingState { get; set; }
+    public string ShippingZipCode { get; set; }
+    public string ShippingCountry { get; set; }
 }

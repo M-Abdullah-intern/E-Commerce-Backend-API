@@ -6,7 +6,7 @@ namespace ECommerceAPI.Services.Interfaces
 {
         public interface IOrderService
     {
-        Task PlaceOrder(int userId);
+        Task PlaceOrder(int userId, int shippingAddressId);
         Task<List<OrderDto>> GetUserOrders(int userId);
        
         //Admin features

@@ -13,20 +13,23 @@ namespace ECommerceAPI.Services.Implementations
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IAddressRepository _addressRepository;
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
 
         public OrderService(
     AppDbContext context,
     IOrderRepository orderRepository,
+    IAddressRepository addressRepository,
     IMapper mapper)
         {
             _context = context;
             _orderRepository = orderRepository;
+            _addressRepository = addressRepository;
             _mapper = mapper;
         }
 
-        public async Task PlaceOrder(int userId)
+        public async Task PlaceOrder(int userId, int shippingAddressId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -37,13 +40,25 @@ namespace ECommerceAPI.Services.Implementations
                 if (cart == null || !cart.CartItems.Any())
                     throw new BadRequestException("Cart is empty");
 
+                var address = await _addressRepository.GetById(shippingAddressId);
+
+                if (address == null || address.UserId != userId)
+                    throw new NotFoundException("Shipping address not found");
+
                 decimal total = 0;
 
                 var order = new Order
                 {
                     UserId = userId,
                     Status = OrderStatus.Pending,
-                    OrderItems = new List<OrderItem>()
+                    OrderItems = new List<OrderItem>(),
+                    ShippingFullName = address.FullName,
+                    ShippingPhoneNumber = address.PhoneNumber,
+                    ShippingStreetAddress = address.StreetAddress,
+                    ShippingCity = address.City,
+                    ShippingState = address.State,
+                    ShippingZipCode = address.ZipCode,
+                    ShippingCountry = address.Country
                 };
 
                 foreach (var item in cart.CartItems)

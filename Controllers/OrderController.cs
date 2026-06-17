@@ -19,11 +19,11 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpPost("place")]
-        public async Task<IActionResult> PlaceOrder()
+        public async Task<IActionResult> PlaceOrder(PlaceOrderDto dto)
         {
             var userId = UserClaimsHelper.GetUserId(User);
 
-            await _orderService.PlaceOrder(userId);
+            await _orderService.PlaceOrder(userId, dto.ShippingAddressId);
 
             return Ok(ApiResponseHelper.Success("Order placed successfully"));
         }

@@ -9,7 +9,6 @@ namespace ECommerceAPI.Controllers
 {
     [ApiController]
     [Route("api/category")]
-    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
@@ -21,6 +20,7 @@ namespace ECommerceAPI.Controllers
 
         // GET ALL CATEGORIES
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var categories = await _service.GetAll();

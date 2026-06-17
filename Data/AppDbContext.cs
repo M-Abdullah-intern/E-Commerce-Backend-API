@@ -50,6 +50,13 @@ namespace ECommerceAPI.Data
                 .Property(oi => oi.Price)
                 .HasPrecision(18, 2);
 
+            // Configure ShippingAddress relationship
+            modelBuilder.Entity<ShippingAddress>()
+                .HasOne(sa => sa.User)
+                .WithMany()
+                .HasForeignKey(sa => sa.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Seed initial categories
             modelBuilder.Entity<Category>()
                 .HasData(new Category
@@ -91,5 +98,8 @@ namespace ECommerceAPI.Data
         // Order System Dbsets
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+
+        // Shipping System Dbsets
+        public DbSet<ShippingAddress> ShippingAddresses { get; set; }
     }
 }

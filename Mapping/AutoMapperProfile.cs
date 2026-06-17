@@ -4,8 +4,8 @@ using ECommerceAPI.DTOs.Category;
 using ECommerceAPI.DTOs.OrderDTOs;
 using ECommerceAPI.DTOs.ProductDTOs;
 using ECommerceAPI.DTOs.ProductImage;
+using ECommerceAPI.DTOs.ShippingAddress;
 using ECommerceAPI.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ECommerceAPI.Mapping
 {
@@ -31,6 +31,9 @@ namespace ECommerceAPI.Mapping
 
             // Category
             CreateMap<Category, CategoryDto>();
+
+            // Shipping Address
+            CreateMap<ShippingAddress, ShippingAddressDto>();
 
             // Cart
             CreateMap<CartItem, CartItemDto>()
