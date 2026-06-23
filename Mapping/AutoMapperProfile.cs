@@ -50,7 +50,9 @@ namespace ECommerceAPI.Mapping
 
             CreateMap<Cart, CartDto>()
                 .ForMember(dest => dest.Items,
-                    opt => opt.MapFrom(src => src.CartItems));
+                    opt => opt.MapFrom(src => src.CartItems))
+                .ForMember(dest => dest.Total,
+                    opt => opt.MapFrom(src => src.CartItems.Sum(ci => ci.Product.Price * ci.Quantity)));
 
             // Order
             CreateMap<OrderItem, OrderItemDto>()

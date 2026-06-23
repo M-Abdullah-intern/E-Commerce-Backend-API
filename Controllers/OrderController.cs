@@ -60,5 +60,25 @@ namespace ECommerceAPI.Controllers
 
             return Ok(ApiResponseHelper.Success("Order status updated successfully"));
         }
+
+        [HttpPost("{orderId}/cancel")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var userId = UserClaimsHelper.GetUserId(User);
+
+            await _orderService.CancelOrder(userId, orderId);
+
+            return Ok(ApiResponseHelper.Success("Order cancelled successfully"));
+        }
+
+        [HttpPost("{orderId}/confirm-delivery")]
+        public async Task<IActionResult> ConfirmDelivery(int orderId)
+        {
+            var userId = UserClaimsHelper.GetUserId(User);
+
+            await _orderService.ConfirmDelivery(userId, orderId);
+
+            return Ok(ApiResponseHelper.Success("Delivery confirmed successfully"));
+        }
     }
 }

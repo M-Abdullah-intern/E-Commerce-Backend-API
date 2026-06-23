@@ -12,5 +12,7 @@ namespace ECommerceAPI.Services.Interfaces
         //Admin features
         Task<List<AdminOrderDto>> GetAllOrdersAsync();
         Task<bool> UpdateOrderStatusAsync(int orderId, OrderStatus newStatus);
+        Task CancelOrder(int userId, int orderId);
+        Task ConfirmDelivery(int userId, int orderId);
     }
 }

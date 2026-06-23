@@ -134,5 +134,41 @@ namespace ECommerceAPI.Services.Implementations
             return true;
         }
 
+        public async Task CancelOrder(int userId, int orderId)
+        {
+            var order = await _orderRepository.GetOrderById(orderId);
+
+            if (order == null)
+                throw new NotFoundException("Order not found");
+
+            if (order.UserId != userId)
+                throw new UnauthorizedAccessException("You can only cancel your own orders");
+
+            if (!OrderStatusHelper.IsValidTransition(order.Status, OrderStatus.Cancelled))
+                throw new Exception("Order cannot be cancelled in its current state");
+
+            order.Status = OrderStatus.Cancelled;
+
+            await _orderRepository.SaveChangesAsync();
+        }
+
+        public async Task ConfirmDelivery(int userId, int orderId)
+        {
+            var order = await _orderRepository.GetOrderById(orderId);
+
+            if (order == null)
+                throw new NotFoundException("Order not found");
+
+            if (order.UserId != userId)
+                throw new UnauthorizedAccessException("You can only confirm delivery for your own orders");
+
+            if (!OrderStatusHelper.IsValidTransition(order.Status, OrderStatus.Delivered))
+                throw new Exception("Order cannot be marked as delivered in its current state");
+
+            order.Status = OrderStatus.Delivered;
+
+            await _orderRepository.SaveChangesAsync();
+        }
+
     }
 }

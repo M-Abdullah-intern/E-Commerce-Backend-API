@@ -31,13 +31,13 @@ namespace ECommerceAPI.Repositories.Implementations
         // Get Products by category method
         public async Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId)
             => await _context.Products
-                .Where(p => p.CategoryId == categoryId)
+                .Where(p => p.CategoryId == categoryId && !p.IsDeleted)
                 .ToListAsync();
 
         // Search Product by name method
         public async Task<IEnumerable<Product>> SearchAsync(string keyword)
             => await _context.Products
-                .Where(p => p.Name.Contains(keyword))
+                .Where(p => p.Name.Contains(keyword) && !p.IsDeleted)
                 .ToListAsync();
 
         // Get Productby ID method
@@ -83,6 +83,7 @@ namespace ECommerceAPI.Repositories.Implementations
             var query = _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
+                .Where(p => !p.IsDeleted)
                 .AsQueryable();
 
             if (queryParams.CategoryId.HasValue)

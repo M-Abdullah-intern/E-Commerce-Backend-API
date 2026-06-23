@@ -11,6 +11,8 @@ namespace ECommerceAPI.Helpers
                 (OrderStatus.Pending, OrderStatus.Processing) => true,
                 (OrderStatus.Processing, OrderStatus.Shipped) => true,
                 (OrderStatus.Shipped, OrderStatus.Delivered) => true,
+                (OrderStatus.Pending, OrderStatus.Cancelled) => true,
+                (OrderStatus.Processing, OrderStatus.Cancelled) => true,
                 _ => false
             };
         }
