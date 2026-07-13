@@ -17,12 +17,12 @@ namespace ECommerceAPI.Services.Implementations
             if (File == null || File.Length == 0)
                 throw new ArgumentException("No File uploaded.");
 
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
 
             var extension = Path.GetExtension(File.FileName).ToLower();
 
             if (!allowedExtensions.Contains(extension))
-                throw new ArgumentException("Invalid file type. Only JPG, JPEG, and PNG files are allowed.");
+                throw new ArgumentException("Invalid file type. Only JPG, JPEG, PNG, and WebP files are allowed.");
 
             if (File.Length > 5 * 1024 * 1024)
                 throw new ArgumentException("File size exceeds the 5MB limit.");
